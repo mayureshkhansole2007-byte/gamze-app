@@ -368,3 +368,10 @@ input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px
 .incorrect .result-overlay .btn { color: var(--danger); }
 
 .hidden { display: none !important; }
+
+/* Answer Highlight Styles */
+.option-card.correct-option { border-color: var(--success); background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.option-card.correct-option .option-number { border-color: var(--success); color: var(--success); }
+
+.option-card.incorrect-option { border-color: var(--danger); background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.option-card.incorrect-option .option-number { border-color: var(--danger); color: var(--danger); }
