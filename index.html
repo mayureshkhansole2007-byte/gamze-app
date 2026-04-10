@@ -202,8 +202,18 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" id="icon-error" class="hidden"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </div>
                     <h2 id="result-title">Excellent!</h2>
-                    <p id="result-message">+20 XP earned</p>
+                    <p id="result-message">+10 XP earned</p>
                     <button class="btn primary-btn btn-3d w-full" id="continue-btn" onclick="nextQuestion()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Badge Overlay -->
+            <div id="badge-overlay" class="result-overlay hidden" style="z-index: 200;">
+                <div class="result-content" style="text-align: center; grid-template-columns: 1fr;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;" id="badge-popup-icon">🏆</div>
+                    <h2 id="badge-popup-title" style="color: var(--warning);">Badge Unlocked!</h2>
+                    <p id="badge-popup-message" style="margin-bottom: 1rem;">You are now a Beginner Coder!</p>
+                    <button class="btn warning-btn btn-3d w-full" style="background: var(--warning); color: white; box-shadow: 0 4px 0 var(--warning-shadow);" onclick="closeBadgePopup()">Awesome!</button>
                 </div>
             </div>
         </main>

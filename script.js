@@ -7,8 +7,15 @@ let state = {
     unlockedLevels: 1,
     selectedOption: null,
     currentQuestionIndex: 0,
-    currentLevelQuestions: [] // The queue of questions for the current level
+    currentLevelQuestions: [], // The queue of questions for the current level
+    earnedBadges: [] // Track unlocked badge IDs
 };
+
+const badgesData = [
+    { id: "beginner", title: "Beginner Coder", xpRequired: 50, icon: "👶" },
+    { id: "intermediate", title: "Intermediate Dev", xpRequired: 150, icon: "🚀" },
+    { id: "expert", title: "Expert Hacker", xpRequired: 300, icon: "👑" }
+];
 
 // Database of levels
 const levelsData = [
@@ -305,9 +312,10 @@ function showResult(isCorrect, question) {
     if (isCorrect) {
         overlay.classList.add('correct');
         title.textContent = "Excellent!";
-        message.textContent = "+20 XP earned";
+        message.textContent = "+10 XP earned";
         iconSuccess.classList.remove('hidden');
-        state.xp += 20;
+        state.xp += 10;
+        checkBadges();
     } else {
         overlay.classList.add('incorrect');
         title.textContent = "Not quite right";
@@ -353,14 +361,77 @@ function updateUI() {
     document.getElementById('total-xp').textContent = state.xp.toLocaleString();
     document.getElementById('lives-count').textContent = state.lives;
     
+    // Update Dashboard Progress Bar (Goal: 300 XP for Expert)
+    const goalXp = 300;
+    const progressPercent = Math.min((state.xp / goalXp) * 100, 100);
+    const progressFill = document.getElementById('dashboard-progress');
+    if (progressFill) progressFill.style.width = `${progressPercent}%`;
+    
+    const progressText = document.getElementById('completed-lessons');
+    if (progressText) {
+        progressText.textContent = `${state.xp}`;
+        progressText.nextSibling.textContent = ` / ${goalXp} XP`;
+    }
+
+    // Update Badges Panel
+    const badgesListContainer = document.querySelector('.badges-list');
+    if (badgesListContainer) {
+        badgesListContainer.innerHTML = '';
+        badgesData.forEach(badge => {
+            const isEarned = state.earnedBadges.includes(badge.id);
+            const badgeEl = document.createElement('div');
+            badgeEl.className = `badge ${isEarned ? 'earned' : 'locked'}`;
+            badgeEl.innerHTML = `
+                <div class="badge-icon">${badge.icon}</div>
+                <span>${badge.title}</span>
+                <span style="margin-left: auto; font-size: 0.8rem; color: var(--text-muted); opacity: ${isEarned ? '0' : '1'}">${badge.xpRequired} XP</span>
+            `;
+            badgesListContainer.appendChild(badgeEl);
+        });
+    }
+
     // Check lives
     if (state.lives <= 0) {
         setTimeout(() => {
-            alert("Out of lives! Journey reset.");
+            alert("Out of lives! Journey reset. Try again!");
             state.lives = 3;
+            state.xp = 0;
             state.unlockedLevels = 1;
+            state.earnedBadges = [];
             updateUI();
             navigate('dashboard-page');
+            document.getElementById('result-overlay').classList.add('hidden');
         }, 500);
+    }
+}
+
+// Badge Logic
+function checkBadges() {
+    const unearnedBadges = badgesData.filter(b => !state.earnedBadges.includes(b.id));
+    
+    for (let badge of unearnedBadges) {
+        if (state.xp >= badge.xpRequired) {
+            // Earned a new badge!
+            state.earnedBadges.push(badge.id);
+            
+            // Show popup
+            document.getElementById('result-overlay').classList.add('hidden'); // Hide question overlay to prevent clash
+            
+            const badgeOverlay = document.getElementById('badge-overlay');
+            document.getElementById('badge-popup-icon').textContent = badge.icon;
+            document.getElementById('badge-popup-message').textContent = `You unlocked the ${badge.title} badge!`;
+            badgeOverlay.classList.remove('hidden');
+            break; // Show one at a time
+        }
+    }
+}
+
+function closeBadgePopup() {
+    document.getElementById('badge-overlay').classList.add('hidden');
+    // If we're inside a question flow, let nextQuestion() or the user continue cleanly.
+    // If the check button is hidden, it signifies they just finished evaluating an answer.
+    const checkBtn = document.getElementById('check-btn');
+    if (checkBtn && checkBtn.classList.contains('hidden')) {
+        document.getElementById('result-overlay').classList.remove('hidden'); // Restore result overlay so they can hit Continue
     }
 }
