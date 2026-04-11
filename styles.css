@@ -375,3 +375,32 @@ input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px
 
 .option-card.incorrect-option { border-color: var(--danger); background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 .option-card.incorrect-option .option-number { border-color: var(--danger); color: var(--danger); }
+
+/* Leaderboard Styles */
+.leaderboard-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+.lb-rank { font-weight: 800; font-size: 1.2rem; width: 30px; text-align: center; }
+.lb-item { display: flex; align-items: center; gap: 1rem; background: var(--bg-darker); padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--glass-border); }
+.lb-item:nth-child(1) .lb-rank { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); font-size: 1.5rem; }
+.lb-item:nth-child(2) .lb-rank { color: #94a3b8; }
+.lb-item:nth-child(3) .lb-rank { color: #b45309; }
+.lb-user { line-height: 1.2; }
+.lb-user .lb-name { font-weight: 700; color: var(--text-main); font-size: 1rem;}
+.lb-user .lb-lvl { font-size: 0.8rem; color: var(--text-muted); }
+.lb-xp { margin-left: auto; color: var(--warning); font-weight: 800; }
+
+/* Floating XP Animation */
+@keyframes float-up-fade {
+    0% { opacity: 0; transform: translateY(0) scale(0.8); }
+    20% { opacity: 1; transform: translateY(-10px) scale(1.2); }
+    80% { opacity: 1; transform: translateY(-30px) scale(1); }
+    100% { opacity: 0; transform: translateY(-40px) scale(0.9); }
+}
+.floating-xp-text {
+    position: absolute;
+    color: var(--warning);
+    font-weight: 800;
+    font-size: 1.2rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    white-space: nowrap;
+    animation: float-up-fade 1.5s ease-out forwards;
+}
